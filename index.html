@@ -1055,7 +1055,11 @@ function applyLeimaPatch(){const ID='leima-30:50',r=(6+10/60)/(6+15/60);let ch=f
   const nd=String(s.description||'').replace(/(\d{1,2}:\d{2})(?:(\s*[-–]\s*)(\d{1,2}:\d{2}))?(\s*\/km)/g,(m,a,sep,b,u)=>f(a)+(b?sep+f(b):'')+u);s.leimaPatch=ID;if(nd!==s.description){s.description=nd;ch=true}});
  return ch}
 function applyRacePatch(){const RACE_PATCH_ID='objetivos-2026-11-16';let ch=false;const hm=(t,d)=>{const[h,m]=String(t).split(':').map(Number),z=h*60+m+d;return String(Math.floor(z/60)%24).padStart(2,'0')+':'+String(z%60).padStart(2,'0')},ver=(PLAN.find(s=>s.planVersion)||{}).planVersion;
- const add=s=>{if(PLAN.some(x=>x.date===s.date&&x.title===s.title))return;PLAN.push({...s,end:hm(s.time,s.duration),kind:'running',planCategory:'race',racePatch:RACE_PATCH_ID,planVersion:ver});ch=true};
+ const used=x=>!!(logs[idOf(x)]||links[idOf(x)]),own=x=>x.planCategory!=='rest'&&x.racePatch!==RACE_PATCH_ID;
+ /* si en el día de una carrera ya había una sesión propia con entreno registrado o vinculado, esa es la carrera: se fusiona y se quita el duplicado */
+ PLAN.slice().forEach(x=>{if(x.racePatch!==RACE_PATCH_ID||x.planCategory!=='race'||used(x))return;const y=PLAN.find(z=>z!==x&&z.date===x.date&&own(z)&&used(z));if(!y)return;
+  y.planCategory='race';y.kind='running';if(!y.location&&x.location)y.location=x.location;if(!y.distancePlanned)y.distancePlanned=x.distancePlanned;if(!String(y.description||'').trim())y.description=x.description;y.raceMerged=x.title;PLAN.splice(PLAN.indexOf(x),1);ch=true});
+ const add=s=>{if(PLAN.some(x=>x.date===s.date&&(x.title===s.title||x.raceMerged===s.title||(x.planCategory==='race'&&x.racePatch!==RACE_PATCH_ID))))return;PLAN.push({...s,end:hm(s.time,s.duration),kind:'running',planCategory:'race',racePatch:RACE_PATCH_ID,planVersion:ver});ch=true};
  const mod=(date,title,f)=>{const s=PLAN.find(x=>x.date===date&&x.title===title);if(!s||s.racePatch===RACE_PATCH_ID||logs[date+'_'+title])return;const oldId=date+'_'+title;f(s);s.end=hm(s.time,s.duration);s.racePatch=RACE_PATCH_ID;const newId=s.date+'_'+s.title;if(newId!==oldId){if(links[oldId]){links[newId]=links[oldId];delete links[oldId]}migrateId(oldId,newId)}ch=true};
  const note=(s,t)=>{s.description=(s.description||'').trim()+'\n\nAJUSTE POR CARRERAS OBJETIVO:\n'+t};
  add({date:'2026-11-15',time:'11:00',duration:50,distancePlanned:5,title:'Carrera Leima · 5K',location:'Leima',description:`Objetivo:
@@ -1150,7 +1154,7 @@ function strengthSummary(s){const d=String(s.description||'').replace(/\r/g,''),
  [...d.matchAll(/AJUSTE[^\n]*:\n([^\n]+)/g)].forEach(x=>out.push('⚠️ '+cut(x[1],160)));return out.map(x=>x.replace(/ min\.\)/,' min)')).join('\n')}
 
 /* ===================== v5 · más fácil de usar ===================== */
-const APP_VERSION='2026.11.17',KSEEN='hyroxBilbao.seenVersion',KREST='hyroxBilbao.gymRest';
+const APP_VERSION='2026.11.17.2',KSEEN='hyroxBilbao.seenVersion',KREST='hyroxBilbao.gymRest';
 const NEWS=[['🏋️','Modo gimnasio','En las sesiones de fuerza: ejercicio a ejercicio, con los pesos de la última vez ya puestos, botones + y −, y descanso automático con aviso.'],
  ['⚡','Hoy en un toque','Desde la tarjeta de Hoy empiezas la sesión (guía de running o modo gimnasio), la marcas como hecha con tu RPE o hablas con el coach.'],
  ['⌚','Vincular el reloj sin buscar','Cuando el Apple Watch sube un entreno, Hoy te sugiere a qué sesión pertenece: un toque y queda registrado.'],
