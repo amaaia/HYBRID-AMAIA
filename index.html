@@ -576,6 +576,7 @@ async function pullChat(){
  else if(localIsPdf&&!remoteIsPdf){const localLegacyTs=+localStorage.getItem('hyroxBilbao.plants.v1')||0;if(row&&Array.isArray(row.data)&&row.data.length&&Date.parse(row.updated_at)>=localLegacyTs)mergeLegacyPlan(row.data);persist();await pushPlan()}
  else if(!row&&Array.isArray(ld(K.p,null)))pushPlan();
  if(applyPlanPatch()){persist();await pushPlan()}
+ try{await fixLeima15()}catch(e){console.warn('fixLeima15',e)}
  render()}
 const md=t=>{const L=esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^#{1,4}\s*(.+)$/gm,'<b>$1</b>').split('\n');let o='',ul=false;L.forEach(l=>{const m=l.match(/^\s*(?:[-•*]|\d+[.)])\s+(.*)/);if(m){if(!ul){o+='<ul>';ul=true}o+='<li>'+m[1]+'</li>'}else{if(ul){o+='</ul>';ul=false}if(l.trim())o+='<p>'+l+'</p>'}});return o+(ul?'</ul>':'')};
 
@@ -1155,7 +1156,7 @@ function strengthSummary(s){const d=String(s.description||'').replace(/\r/g,''),
  [...d.matchAll(/AJUSTE[^\n]*:\n([^\n]+)/g)].forEach(x=>out.push('⚠️ '+cut(x[1],160)));return out.map(x=>x.replace(/ min\.\)/,' min)')).join('\n')}
 
 /* ===================== v5 · más fácil de usar ===================== */
-const APP_VERSION='2026.11.17.4',KSEEN='hyroxBilbao.seenVersion',KREST='hyroxBilbao.gymRest';
+const APP_VERSION='2026.11.17.5',KSEEN='hyroxBilbao.seenVersion',KREST='hyroxBilbao.gymRest';
 const NEWS=[['🗑️','Descartar entrenos del reloj','Si un entreno del reloj no corresponde a ninguna sesión, pulsa «Descartar» y deja de salir como pendiente de vincular. Se puede recuperar.'],['🏋️','Modo gimnasio','En las sesiones de fuerza: ejercicio a ejercicio, con los pesos de la última vez ya puestos, botones + y −, y descanso automático con aviso.'],
  ['⚡','Hoy en un toque','Desde la tarjeta de Hoy empiezas la sesión (guía de running o modo gimnasio), la marcas como hecha con tu RPE o hablas con el coach.'],
  ['⌚','Vincular el reloj sin buscar','Cuando el Apple Watch sube un entreno, Hoy te sugiere a qué sesión pertenece: un toque y queda registrado.'],
@@ -1249,6 +1250,18 @@ document.addEventListener('change',e=>{const t=e.target;if(t.dataset.ql==='useW'
 document.addEventListener('click',e=>{const b=e.target.closest('[data-x="wdism"],[data-x="wundism"]');if(!b)return;e.stopPropagation();const id=String(b.dataset.wid),on=b.dataset.x==='wdism',L=dismW().filter(x=>x!==id);if(on)L.push(id);PROFILE.dismissedW=L;saveProfile();
  const open=$('#sheet')&&$('#sheet').style.display==='block'&&String($('#sheet').dataset.w)===id;if(open)openW(id);render();
  toast(on?'Entreno descartado · puedes recuperarlo desde Rendimiento › Entrenamientos del reloj':'Entreno recuperado: ya puedes vincularlo')},true);
+
+
+/* ---------- corrección puntual: el 15/11 solo queda la carrera de Leima, con el entreno real que se hizo ---------- */
+async function fixLeima15(){const K='hyroxBilbao.fix1115.v1';try{if(localStorage.getItem(K))return}catch(e){}
+ const D='2026-11-15',T='Carrera Leima · 5K',id=x=>x.date+'_'+x.title,used=x=>!!(logs[id(x)]||links[id(x)]),day=PLAN.filter(x=>x.date===D&&x.planCategory!=='rest');
+ let race=day.find(x=>x.title===T);const others=day.filter(x=>x!==race);if(!others.length){try{localStorage.setItem(K,'1')}catch(e){}return}
+ const src=others.find(x=>logs[id(x)])||others.find(used);
+ if(!race){const base=src||others[0];race={...base,title:T,kind:'running',planCategory:'race',location:'Leima',distancePlanned:5,description:"Objetivo:\nPrimera referencia competitiva del bloque: medir tu 5K actual para ajustar los ritmos de todo el plan.\n\nResultado: 30:50 (6:10/km). Ritmos del plan recalculados con esta marca el 16/11.\n\nResultado: 30:50 (6:10/km). Ritmos del plan recalculados con esta marca el 16/11.\n\nTiempo aproximado: 45-50 min total con calentamiento\nKm aproximados: 5K carrera + calentamiento\n\nCalentamiento:\n- 12-15 min suaves\n- 3 x 20 s progresivos\n\nCarrera:\n- 5 km a tope controlado, con el primer km algo más prudente\n\nDespués:\n- Registra el tiempo final y vincula el entreno del reloj.\n- Escribe el tiempo en Rendimiento › Perfil y zonas para recalcular tus ritmos.\n\nNota: una semana después llega Novo Mesoiro; Leima marca la referencia y Novo sirve para confirmarla.",racePatch:'objetivos-2026-11-16',leimaPatch:'leima-30:50'};delete race.raceMerged;
+  if(!(await replaceSession(id(base),race)))return;others.splice(others.indexOf(base),1)}
+ else if(src&&!used(race)){const o=id(src),n=id(race);if(logs[o]){logs[n]={...logs[o],id:n,date:race.date,title:race.title};delete logs[o];pushLog(logs[n])}if(links[o]){links[n]=links[o];delete links[o];await cloud('session_links',(q,u)=>q.upsert({user_id:u,session_id:n,sample_id:String(links[n]),confirmed_at:new Date().toISOString()},{onConflict:'user_id,session_id'}))}migrateId(o,n);await cloud('training_logs',(q,u)=>q.delete().eq('user_id',u).eq('id',o));await cloud('session_details',(q,u)=>q.delete().eq('user_id',u).eq('session_id',o));await cloud('session_links',(q,u)=>q.delete().eq('user_id',u).eq('session_id',o))}
+ for(const x of others){const o=id(x),k=PLAN.indexOf(x);if(k>=0)PLAN.splice(k,1);delete logs[o];delete links[o];await cloud('training_logs',(q,u)=>q.delete().eq('user_id',u).eq('id',o));await cloud('session_details',(q,u)=>q.delete().eq('user_id',u).eq('session_id',o));await cloud('session_links',(q,u)=>q.delete().eq('user_id',u).eq('session_id',o))}
+ persist();await pushPlan();try{localStorage.setItem(K,'1')}catch(e){}render();toast('15 de noviembre: queda solo la carrera de Leima')}
 
 render();
 </script></body></html>
