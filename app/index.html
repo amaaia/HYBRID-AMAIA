@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ritmo Híbrido</title>
+  <meta name="description" content="Plan de entrenamiento híbrido personalizado: carrera, fuerza y competiciones de fitness, con guía por voz y coach con IA.">
+  <meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ritmo Híbrido">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <main id="app" aria-live="polite"><p class="mut" style="padding:40px 0;text-align:center">Cargando…</p></main>
+  <nav id="nav" hidden aria-label="Navegación principal"></nav>
+  <noscript><p style="padding:20px">Esta app necesita JavaScript.</p></noscript>
+  <script>
+    // si algo falla al arrancar, se muestra el error en lugar de una pantalla en blanco
+    addEventListener('error', function (e) {
+      var a = document.getElementById('app');
+      if (a && /Cargando/.test(a.textContent)) a.innerHTML = '<div class="card" style="margin:24px 0"><h3>La app no ha podido arrancar</h3><p class="mut">' + String(e.message || 'Error').replace(/[<>&]/g, '') + '</p><button class="btn" onclick="location.reload()">Recargar</button></div>';
+    });
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
