@@ -106,7 +106,7 @@ const MOB = {
   post: ['Jefferson curl ligero → 10', 'Círculos de cadera (hip CARs) → 10', 'Sentadilla profunda mantenida → 30 s', 'Estiramiento de sofá (couch stretch) → 30/30 s'],
   run: ['Puente de glúteo con alcance → 10', 'Balanceos de pierna → 10/10', 'Zancada con rotación → 5/5', 'Abridores de cadera dinámicos → 5/5'],
 };
-const MOBB = (k, min) => txt(`Movilidad · ${min} min AMRAP`, [...MOB[k], 'Repite el circuito sin prisa hasta completar el tiempo.'], min);
+const MOBB = (k, min) => txt(`Movilidad · ${min} min`, [...MOB[k].slice(0, min <= 4 ? 3 : 4), 'Seguido, sin prisa.'], min);
 const BREATH = () => txt('Respiración · 5 min', ['Respiración en caja: 4 s inspirar, 4 s retener, 4 s espirar, 4 s retener.'], 5);
 const COOL = (min = 8) => txt('Vuelta a la calma', [`${hasErg() ? 'Bici' : 'Paseo o trote'} ${min} min muy suave (zona 2 baja).`], min);
 const CORE = (rounds, kind = 0) => {
@@ -146,7 +146,7 @@ function strPost(P, ctx) {
     ex(`Conditioning · ${rnd} rondas (descanso 2 min)`, [it(bi, 1, bq), it(ri, 1, rq, 0, 'Ritmo 2K +10-12 s/500 m'), it(`${X('slam')} — transporte`, 1, '30 m')], rnd, rnd * 6),
   ][v];
   return { kind: 'strength', title: 'Fuerza cadena posterior + conditioning', focus: 'Peso muerto, cadera y espalda', intensity: 'hard',
-    blocks: [WU_1515(), MOBB('post', P.sessionMin <= 45 ? 5 : 10), strength, cond, COOL(6)],
+    blocks: [WU_1515(), MOBB('post', 4), strength, cond, COOL(6)],
     notes: 'En la fuerza, deja siempre las repeticiones de margen indicadas (RIR): sin llegar al fallo.' };
 }
 function strFull(P, ctx) {
@@ -155,7 +155,7 @@ function strFull(P, ctx) {
   if (runner || v === 2) { // unilateral
     const [b, bq] = erg('bike', `${level(P, 12, 16, 20)} cal`);
     return { kind: 'strength', title: runner ? 'Fuerza unilateral + core' : 'Fuerza unilateral + conditioning', focus: 'Estabilidad y fuerza de una pierna', intensity: runner ? 'moderate' : 'hard',
-      blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici' : 'Trote suave'} 30 s`, 'Plancha 20 s', 'Superman 20 s', 'Sentadillas 12'], 5), MOBB('full', P.sessionMin <= 45 ? 5 : 8),
+      blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici' : 'Trote suave'} 30 s`, 'Plancha 20 s', 'Superman 20 s', 'Sentadillas 12'], 4), MOBB('full', 3),
         ex('Fuerza unilateral', [E('slrdl', 4, '10/10', 75), E('suitcase', 4, '10/10', 75), E('ohLunge', 3, '8/8', 75), E('landmine', 4, '8/8', 60)], 1, 26),
         runner ? CORE(3, ctx.week) : ex(`Conditioning · ${Math.min(3, rnd)} rondas por tiempo (descanso 3 min)`, [it(b, 1, bq), it('Sentadillas', 1, level(P, 30, 40, 50)), it(X('walkLunge'), 1, '30 m'), it('Burpees', 1, level(P, 10, 15, 20))], Math.min(3, rnd), Math.min(3, rnd) * 7),
         COOL(6)],
@@ -164,7 +164,7 @@ function strFull(P, ctx) {
   if (v === 0) { // empuje + metcon
     const [b, bq] = erg('bike', '15 cal');
     return { kind: 'strength', title: 'Fuerza empuje + metcon', focus: 'Sentadilla y empuje', intensity: 'hard',
-      blocks: [WU_1515(), MOBB('thor', P.sessionMin <= 45 ? 5 : 10),
+      blocks: [WU_1515(), MOBB('thor', 4),
         ex('Fuerza', [mainLift('frontsquat', ctx, P), E('cyclist', 4, 12, 60), E('bench', 4, 8, 90, 'RIR 2-3'), E('dbpress', 4, 10, 75)], 1, 28),
         ex(`Metcon · ${Math.min(6, rnd + 1)} rondas (descanso 90 s)`, [it(b, 1, bq, 0, 'De pie, fuerte'), it('Sentadillas', 1, 10), it('Saltos verticales', 1, 5)], Math.min(6, rnd + 1), (rnd + 1) * 3), COOL(5)],
       notes: 'El metcon es rápido pero controlado: misma calidad en la última ronda que en la primera.' };
@@ -180,7 +180,7 @@ function strFull(P, ctx) {
   // específica (dumbbells + EMOM)
   const [ab, abq] = erg('bike', 'máx. cal en 1 min');
   return { kind: 'strength', title: 'Fuerza específica + EMOM', focus: 'Potencia con mancuernas', intensity: 'hard',
-    blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici 15 cal' : 'Skipping 1 min'}`, 'Inchworm → 8', 'Monster walks → 8+8', 'World’s greatest stretch → 2+2'], 5), MOBB('full', 7),
+    blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici 15 cal' : 'Skipping 1 min'}`, 'Inchworm → 8', 'Monster walks → 8+8', 'World’s greatest stretch → 2+2'], 4), MOBB('full', 3),
       ex('Fuerza', [E('cluster', 4, 8, 90, 'RIR 3-4'), E('powerclean', 4, 8, 90, 'RIR 3-4'), E('snatch', 4, '10/10', 75), E('lungeFR', 4, '8/8', 75)], 1, 24),
       ex('EMOM 20 min · 4 bloques (descanso 1 min)', [E('frontsquat', 1, 8, 0, 'Con margen'), it(X('slam'), 1, 8), E('lungeFR', 1, '6+6', 0), it(hasErg() ? 'Bici — máximas calorías' : 'Burpees — máximas reps', 1, '1 min', 60)], 4, 20), COOL(6)],
     notes: 'Objetivo del EMOM: sumar el máximo de calorías (o repeticiones) en las 4 rondas manteniendo la técnica.' };
@@ -190,7 +190,7 @@ function circuitDB(P, ctx) {
   const st = [X('floorpress'), X('snatch'), X('thruster'), X('powerclean'), X('stepup'), X('lungeFR'), X('pushpress'), X('walkLunge'), 'Burpees con mancuernas'];
   const end = hasErg() ? 'Remo ergómetro 5 × 3 min a 20 paladas/min (75-80 % de tu ritmo 2K), descanso 90 s' : 'Carrera 5 × 3 min a ritmo 5K +45 s, 90 s de descanso andando';
   return { kind: 'conditioning', title: 'Circuito de fuerza-resistencia', focus: '9 estaciones de 1 min', intensity: 'hard',
-    blocks: [txt('Movilidad · 10 min AMRAP', ['Inchworm → 5', 'Twisted cross → 15 s', 'Monster walks → 10+10', 'Superman con alcance → 10', 'Flexiones → 12-15', 'Dominadas o remo → 4-8'], 8),
+    blocks: [txt('Calentamiento y movilidad · 6 min', ['Inchworm → 5', 'Twisted cross → 15 s', 'Monster walks → 10+10', 'Superman con alcance → 10', 'Flexiones → 12-15', 'Dominadas o remo → 4-8'], 6),
       ex(`Circuito · ${rnd} rondas · 1 min trabajo / 30 s descanso`, st.map(n => it(n, 1, '1 min', 30, '', 90)), rnd, rnd * 14 + (rnd - 1) * 3),
       txt('Resistencia', [end], 22)],
     notes: 'Descansa 3 min entre rondas. Elige un peso que puedas mover el minuto entero con buena técnica.' };
@@ -290,7 +290,7 @@ function hyroxSpec(P, ctx) {
 /* ---------- PUESTA A PUNTO Y COMPETICIÓN ---------- */
 function taperFull(P) {
   return { kind: 'strength', title: 'Full body ligero + activación', focus: 'Activar sin fatigar', intensity: 'easy',
-    blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici 20 cal' : 'Trote 2 min'}`, 'Inchworm → 6', 'Monster walks → 10+10', 'World’s greatest stretch → 2+2'], 5), MOBB('full', 8),
+    blocks: [txt('Calentamiento · 5 min AMRAP', [`${hasErg() ? 'Bici 20 cal' : 'Trote 2 min'}`, 'Inchworm → 6', 'Monster walks → 10+10', 'World’s greatest stretch → 2+2'], 4), MOBB('full', 3),
       ex('Fuerza ligera', [E('thruster', 3, 10, 75, 'Ligero'), E('floorpress', 3, 10, 60), E('walkLunge', 3, '20 m', 60), E('ringrow', 3, 12, 60)], 1, 18),
       runB('Activación a ritmo de competición', [r(1, P.goal === 'race' ? `race:${+P.raceKm || 5}` : 'p5+15', 'ritmo competición'), r(1, 'recovery', 'descanso')], 3)],
     notes: 'Objetivo: mantener sensaciones de competición y llegar fresca o fresco.' };
