@@ -10,6 +10,13 @@ Es independiente de la app de Amaia (la de la raíz del repositorio): no compart
 - **Plan completo hasta el objetivo**, por fases (base, desarrollo, específico, puesta a punto) con semanas de descarga:
   - **Plan automático**: se genera al instante en el dispositivo, sin cuenta ni IA.
   - **Coach IA**: diseña bloques de 6 semanas teniendo en cuenta cómo te ha ido. El resto hasta la carrera se completa con el plan automático.
+- **Método de entrenamiento** inspirado en la metodología del entrenador de la app de Amaia, adaptado a cualquier nivel y material:
+  - sesiones de fuerza con calentamiento 15″/15″, movilidad en AMRAP, fuerza con RIR (rampa RIR 4→1 en base), core, conditioning o metcon, vuelta a la calma y respiración;
+  - carrera con ritmos «ritmo 5K +X s»: fartleks por bloques de 5 min, progresivos, cuestas e intervalos;
+  - cardio largo combinando ergómetros y carrera;
+  - específicos de competición híbrida: trineos, carrera + burpee broad jump / wall balls, E2MOM y E3MOM;
+  - circuito de fuerza-resistencia con mancuernas, test de 5K y puesta a punto de activación.
+  Los textos son propios: se adapta el método, no se copia el PDF.
 - **Ritmos por zonas** calculados con tu 5K. Cambias el 5K y se recalcula todo el plan. Se pueden ver en min/km o en km/h para la cinta.
 - **Guía de carrera por voz** paso a paso, con pitidos, vibración y la pantalla siempre encendida.
 - **Modo gimnasio**: series con botones + y −, pesos de la última vez y descanso automático.
@@ -99,7 +106,7 @@ Los cupos se devuelven si la llamada a la IA falla.
 
 ## Antes de abrirla al público
 
-- **Contenido de entrenamiento**: el plan automático y las sesiones son contenido propio, escrito para esta app. No incluye nada del PDF del entrenador de la app de Amaia.
+- **Contenido de entrenamiento**: el plan sigue el método (estructura de sesión, formatos y progresiones) del PDF del entrenador de la app de Amaia, con textos propios y adaptado a cada nivel y material. Si vas a presentarlo como «método de Dani» o usar su nombre, pídele permiso y acordad cómo darle crédito.
 - **Marca**: «HYROX» es una marca registrada. La app la menciona solo de forma descriptiva («tipo HYROX»). No la uses en el nombre, el logo ni la publicidad sin permiso.
 - **Salud**: la app avisa de que no sustituye a un profesional sanitario. Revisa con un profesional los textos sobre lesiones si vas a promocionarla.
 - **Privacidad (RGPD)**: guarda datos de salud que la persona escribe, como molestias o lesiones. Antes de abrirla:

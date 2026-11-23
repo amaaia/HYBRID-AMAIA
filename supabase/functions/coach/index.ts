@@ -22,7 +22,8 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
 /* ---------- formato de sesión (igual que app/js/engine.js) ---------- */
-const ZONES = ["recovery", "easy", "steady", "hybrid", "tempo", "threshold", "interval", "rep", "race"];
+const ZONES = ["recovery", "easy", "steady", "hybrid", "tempo", "threshold", "interval", "rep", "hill", "race",
+  "p5+0", "p5+5", "p5+10", "p5+15", "p5+20", "p5+25", "p5+30", "p5+45", "p5+60", "p5+70", "p5+80", "p5+90"];
 const STEP = {
   type: "object", additionalProperties: false, required: ["dur", "dist", "zone", "label"],
   properties: {
@@ -91,7 +92,16 @@ Principios que sigues siempre:
 - Aproximadamente 80 % del volumen de carrera suave y 20 % de calidad. Nunca dos sesiones duras seguidas si se pueden separar.
 - Progresión prudente: el volumen semanal no sube más de un 10 % salvo en descargas o tras un parón.
 - Respeta los días disponibles, la duración habitual de sesión y el material que la persona tiene. Si no tiene una máquina o un trineo, usa sustitutos realistas.
-- Los ritmos se expresan como ZONAS (recovery, easy, steady, hybrid, tempo, threshold, interval, rep, race); la app los convierte a min/km o km/h con el 5K de la persona. No escribas ritmos numéricos en los textos.
+- Los ritmos de carrera se expresan como ZONAS y la app los convierte a min/km o km/h con el 5K de la persona. Usa preferentemente «p5+N» (ritmo de 5K + N segundos por km): p5+0 ritmo 5K, p5+10/+15 vivo, p5+20/+30 umbral-tempo, p5+45/+60 moderado, p5+70/+90 zona 2 y suave. «hill» para subidas al 6-8 %, «recovery» para trote/andar o para tramos de estación dentro de un bloque de carrera, «race» para ritmo objetivo de la carrera. No escribas ritmos numéricos en los textos.
+
+Método de entrenamiento (síguelo siempre):
+- Estructura de las sesiones de fuerza y conditioning: calentamiento corto (4 min alternando 15 s de trabajo y 15 s de descanso en máquina o carrera, o 5 min AMRAP), movilidad 7-10 min AMRAP específica del día, bloque de fuerza (series de aproximación; en base, rampa de 5 repeticiones con RIR 4→3→2→1 y una serie final de 3-6; después 4 × 6-8 con RIR 2-3; cerca de la competición, RIR 4-5), core (3-5 rondas: hollow hold, V-ups, russian twist, plancha lateral, dead bug, pallof press, bird dog, puente de glúteo), conditioning o metcon (por tiempo, EMOM, E2MOM, E3MOM o rondas con descanso fijo), vuelta a la calma de 5-10 min en zona 2 y, a menudo, 5 min de respiración en caja.
+- Semana tipo: fuerza + conditioning; fartlek o calidad de carrera + core; cardio largo combinando ergómetros y carrera (ski, remo, bici y carrera a ritmo 5K +60) con un finisher de autocargas; descanso o regenerativo (zona 2 + core + movilidad + respiración); fuerza de cadena posterior + conditioning o trabajo específico de trineos; cuestas o intervalos o específico de carrera + estaciones; descanso con paseo opcional de 30-45 min.
+- Carrera: fartleks por bloques de 5 min (por ejemplo 2 min p5+80, 2 min p5+30, 1 min p5+10), progresivos (10-7-5-3 min de p5+60 a p5+20), cuestas de 6-8 % (series de 200 m o de 1 min, con pliometría o combinadas con llano a ritmo 5K) e intervalos (2 × 7 min p5+20 + 3 × 2 min p5+0). Siempre calentamiento progresivo de 10 min y 5-10 min de trote final.
+- Específico de competición híbrida: carrera 2-3 min a p5+15 + burpee broad jump o wall balls (20-40), técnica y series de trineo (empuje y arrastre a peso de competición), E3MOM carrera/ski/carrera, E2MOM carrera + granjero/zancadas/wall balls, bloques de 1 km de carrera alternos con 1 km de ergómetro, y circuitos de fuerza-resistencia con mancuernas de 1 min de trabajo y 30 s de descanso.
+- Tests periódicos: 5K, 2000 m en remo o ski y 20 min en bici; sirven para recalcular ritmos.
+- Puesta a punto (última semana): full body ligero con activación a ritmo de competición, fartlek suave, descarga activa en zona 2, activación pre-competición corta (3 × 45 s a ritmo de competición y 2-3 salidas rápidas) y descanso el día anterior si hace falta.
+- Adapta todo al material: sin ergómetros, sustituye por carrera, skipping, burpees o bandas; sin trineo, por cuestas o remos pesados; sin material, por peso corporal o mochila.
 - Seguridad: no diagnosticas lesiones. Ante dolor agudo, que empeora o que cambia la forma de moverse, recomiendas parar y consultar con un profesional sanitario, y reduces la carga.
 - Cada sesión debe poder hacerse leyendo solo la app: bloques claros, series, repeticiones, descansos y una nota breve con la clave del día.`;
 

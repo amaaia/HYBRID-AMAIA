@@ -14,6 +14,7 @@ export const ZONES = {
   threshold: { f: [1.03, 1.07], name: 'Umbral', hint: 'Duro pero sostenible 20-30 min', rpe: '7-8' },
   interval: { f: [0.98, 1.02], name: 'Ritmo 5K', hint: 'Series de 3-5 min', rpe: '8-9' },
   rep: { f: [0.91, 0.95], name: 'Rápido', hint: 'Series cortas, técnica fluida', rpe: '9' },
+  hill: { f: [1.10, 1.20], name: 'Cuesta 6-8 %', hint: 'Esfuerzo fuerte y constante; el ritmo no importa', rpe: '8' },
 };
 
 // tiempo objetivo en una distancia a partir del 5K (fórmula de Riegel)
@@ -25,8 +26,11 @@ export function base5k(profile) {
 }
 
 // devuelve [rápido, lento] en seg/km para una zona o para ritmo de carrera ("race:21.1")
+// "p5+30" = ritmo de 5K + 30 s/km (la notación del método: «+30 ritmo 5K»)
+export const offsetOf = z => (typeof z === 'string' && /^p5\+\d+$/.test(z) ? +z.slice(3) : null);
 export function paceRange(profile, zone) {
-  const p5 = base5k(profile) / 5;
+  const p5 = base5k(profile) / 5, off = offsetOf(zone);
+  if (off != null) return [p5 + off - (off >= 60 ? 6 : 3), p5 + off + (off >= 60 ? 6 : 3)];
   if (zone && zone.startsWith('race:')) {
     const km = +zone.slice(5) || 5, p = predict(base5k(profile), km) / km;
     return [p * 0.99, p * 1.01];
@@ -40,11 +44,17 @@ export const kmh = s => n1(3600 / s);
 
 // texto del objetivo: "6:05–6:15/km" o, en cinta, "9,6–9,9 km/h"
 export function targetTxt(profile, zone, treadmill = false) {
+  if (zone === 'hill') return treadmill ? 'inclinación 6-8 % · RPE 8' : 'esfuerzo RPE 8';
   const [a, b] = paceRange(profile, zone);
   if (treadmill) return `${kmh(b)}–${kmh(a)} km/h`;
   return `${paceTxt(a)}–${paceTxt(b)}/km`;
 }
-export const zoneName = z => (z && z.startsWith('race:') ? 'Ritmo de carrera' : (ZONES[z] || ZONES.easy).name);
+export const zoneName = z => {
+  if (z && z.startsWith('race:')) return 'Ritmo de carrera';
+  const off = offsetOf(z);
+  if (off != null) return off === 0 ? 'Ritmo 5K' : `Ritmo 5K +${off} s`;
+  return (ZONES[z] || ZONES.easy).name;
+};
 
 // estimación del tiempo de una sesión de carrera a ritmo medio de la zona
 export function kmForSeconds(profile, zone, sec) {

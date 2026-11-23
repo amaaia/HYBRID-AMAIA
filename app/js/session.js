@@ -8,6 +8,7 @@ import { targetTxt, zoneName } from './paces.js';
 let SID = null, LOG = null;
 
 export function stepTxt(st, tread = S.settings.treadmill) {
+  if (st.zone === 'recovery' && st.label && !/trote|andando|descanso|bajar|suave|soltar/i.test(st.label)) return { amount: '🏋️', what: st.label, target: 'estación', zone: 'Estación' };
   const amount = st.dur ? durTxt(st.dur) : distTxt(st.dist);
   return { amount, what: st.label || zoneName(st.zone), target: targetTxt(S.profile, st.zone, tread), zone: zoneName(st.zone) };
 }
