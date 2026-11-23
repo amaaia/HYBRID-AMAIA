@@ -106,7 +106,7 @@ Los cupos se devuelven si la llamada a la IA falla.
 
 ## Antes de abrirla al público
 
-- **Contenido de entrenamiento**: el plan sigue el método (estructura de sesión, formatos y progresiones) del PDF del entrenador de la app de Amaia, con textos propios y adaptado a cada nivel y material. Si vas a presentarlo como «método de Dani» o usar su nombre, pídele permiso y acordad cómo darle crédito.
+- **Contenido de entrenamiento**: el plan sigue el método (estructura de sesión, formatos y progresiones) del PDF del entrenador de la app de Amaia, con textos propios y adaptado a cada nivel y material. Si vas a presentarlo como el método de ese entrenador o usar su nombre, pídele permiso antes.
 - **Marca**: «HYROX» es una marca registrada. La app la menciona solo de forma descriptiva («tipo HYROX»). No la uses en el nombre, el logo ni la publicidad sin permiso.
 - **Salud**: la app avisa de que no sustituye a un profesional sanitario. Revisa con un profesional los textos sobre lesiones si vas a promocionarla.
 - **Privacidad (RGPD)**: guarda datos de salud que la persona escribe, como molestias o lesiones. Antes de abrirla:
